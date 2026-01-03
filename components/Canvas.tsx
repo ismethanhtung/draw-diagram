@@ -2,6 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import rough from 'roughjs';
 import { Element, Tool, Point } from '../types';
+import { awsIcons } from '../data/aws-icons';
 
 interface CanvasProps {
   elements: Element[];
@@ -145,6 +146,35 @@ const Canvas: React.FC<CanvasProps> = ({
         ctx.fillStyle = element.strokeColor;
         ctx.textBaseline = 'top';
         ctx.fillText(element.text || '', element.x1, element.y1);
+        break;
+      case 'aws-icon':
+        if (element.iconKey && awsIcons[element.iconKey]) {
+          const icon = awsIcons[element.iconKey];
+          const width = element.x2 - element.x1;
+          const height = element.y2 - element.y1;
+          
+          ctx.save();
+          ctx.translate(element.x1, element.y1);
+          // Standard AWS icons are 24x24 in my definition
+          ctx.scale(width / 24, height / 24); 
+          
+          const p = new Path2D(icon.path);
+          ctx.fillStyle = icon.fill;
+          if (element.backgroundColor !== 'transparent') {
+             // Optional: Fill background behind icon if needed, or override icon color
+             // For now, let's keep original branded colors unless overridden?
+             // Actually, let's let strokeColor override if set to something other than transparent/default? 
+             // nah, branded icons usually stay branded.
+          }
+          ctx.fill(p);
+          ctx.restore();
+          
+          // Draw label below
+          ctx.font = `10px Virgil`;
+          ctx.fillStyle = '#666';
+          ctx.textAlign = 'center';
+          ctx.fillText(icon.name, element.x1 + width/2, element.y1 + height + 12);
+        }
         break;
     }
   };

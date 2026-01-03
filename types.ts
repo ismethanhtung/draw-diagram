@@ -1,5 +1,6 @@
+import { AwsIconType } from './data/aws-icons';
 
-export type Tool = 'selection' | 'hand' | 'rectangle' | 'diamond' | 'circle' | 'arrow' | 'line' | 'draw' | 'eraser' | 'text';
+export type Tool = 'selection' | 'hand' | 'rectangle' | 'diamond' | 'circle' | 'arrow' | 'line' | 'draw' | 'eraser' | 'text' | 'aws-icon';
 
 export type StrokeStyle = 'solid' | 'dashed' | 'dotted';
 export type FillStyle = 'hachure' | 'solid' | 'zigzag' | 'cross-hatch';
@@ -23,6 +24,8 @@ export interface Element {
   strokeStyle: StrokeStyle;
   edgeStyle: EdgeStyle;
   seed: number;
+  iconKey?: AwsIconType;
+  iconName?: string;
 }
 
 export interface Point {

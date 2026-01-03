@@ -212,6 +212,33 @@ const App: React.FC = () => {
           setDefaultStrokeColor={setDefaultStrokeColor}
           defaultBackgroundColor={defaultBackgroundColor}
           setDefaultBackgroundColor={setDefaultBackgroundColor}
+          onAddElement={(type, extra) => {
+            if (type === 'aws-icon') {
+              const centerX = -offset.x / scale + (window.innerWidth / scale) / 2;
+              const centerY = -offset.y / scale + (window.innerHeight / scale) / 2;
+              const newElement: Element = {
+                id: Date.now().toString(),
+                type: 'aws-icon',
+                x1: centerX - 25,
+                y1: centerY - 25,
+                x2: centerX + 25,
+                y2: centerY + 25,
+                strokeColor: 'transparent',
+                backgroundColor: 'transparent',
+                strokeWidth: 0,
+                roughness: 0,
+                opacity: 100,
+                fillStyle: 'solid',
+                strokeStyle: 'solid',
+                edgeStyle: 'sharp',
+                seed: Math.random(),
+                iconKey: extra.iconKey,
+                iconName: extra.iconName
+              };
+              updateElements([...elements, newElement]);
+              setSelectedElementId(newElement.id);
+            }
+          }}
         />
       </main>
 
