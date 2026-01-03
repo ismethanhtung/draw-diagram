@@ -1,0 +1,7 @@
+{
+  "name": "GeminiSketch - Excalidraw Clone",
+  "description": "A whiteboard application with a hand-drawn aesthetic, inspired by Excalidraw, featuring AI-powered sketching and image analysis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
