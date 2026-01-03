@@ -65,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const colors = [
-    '#000000', '#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7'
+    '#ffffff', '#000000', '#ef4444', '#22c55e', '#3b82f6', '#f59e0b', '#a855f7'
   ];
 
   const handleAISuggest = async () => {
@@ -143,13 +143,13 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex flex-col gap-6 mt-12">
           {/* Stroke Section */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Stroke</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Stroke</label>
             <div className="flex gap-1.5 flex-wrap">
               {colors.map(color => (
                 <button
                   key={color}
                   onClick={() => updateProp('strokeColor', color)}
-                  className={`w-7 h-7 rounded-md border-2 transition-all ${activeStrokeColor === color ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
+                  className={`w-6 h-6 rounded-md border-2 border-zinc-400 transition-all ${activeStrokeColor === color ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
                   style={{ backgroundColor: color }}
                 />
               ))}
@@ -158,11 +158,11 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Background Section */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Background</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Background</label>
             <div className="flex gap-1.5 flex-wrap">
               <button
                 onClick={() => updateProp('backgroundColor', 'transparent')}
-                className={`w-7 h-7 rounded-md border-2 flex items-center justify-center relative bg-zinc-50 dark:bg-zinc-800 ${activeBackgroundColor === 'transparent' ? 'border-indigo-500' : 'border-transparent'}`}
+                className={`w-6 h-6 rounded-md border-2 flex items-center justify-center relative bg-zinc-50 dark:bg-zinc-800 ${activeBackgroundColor === 'transparent' ? 'border-indigo-500' : 'border-transparent'}`}
               >
                 <div className="w-5 h-[1.5px] bg-red-500 rotate-45" />
               </button>
@@ -170,7 +170,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <button
                   key={color}
                   onClick={() => updateProp('backgroundColor', color)}
-                  className={`w-7 h-7 rounded-md border-2 transition-all ${activeBackgroundColor === color ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
+                  className={`w-6 h-6 rounded-md border-2 border-zinc-400 transition-all ${activeBackgroundColor === color ? 'border-indigo-500 scale-110' : 'border-transparent'}`}
                   style={{ backgroundColor: color }}
                 />
               ))}
@@ -179,7 +179,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Fill Style */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Fill</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Fill</label>
             <div className="flex gap-1 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl">
               <OptionButton title="Hachure" active={activeFillStyle === 'hachure'} onClick={() => updateProp('fillStyle', 'hachure')}>
                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3l12 12M3 8l7 7M8 3l7 7"/></svg>
@@ -195,7 +195,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Stroke Width */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Stroke width</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Stroke width</label>
             <div className="flex gap-1 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl">
               <OptionButton active={activeStrokeWidth === 1} onClick={() => updateProp('strokeWidth', 1)}>
                 <div className="h-[1px] w-4 bg-current" />
@@ -211,7 +211,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Stroke Style */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Stroke style</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Stroke style</label>
             <div className="flex gap-1 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl">
               <OptionButton title="Solid" active={activeStrokeStyle === 'solid'} onClick={() => updateProp('strokeStyle', 'solid')}>
                 <div className="h-0.5 w-4 bg-current" />
@@ -227,7 +227,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Sloppiness */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Sloppiness</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Sloppiness</label>
             <div className="flex gap-1 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl">
               <OptionButton active={activeRoughness === 0} onClick={() => updateProp('roughness', 0)}>
                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 12h20"/></svg>
@@ -243,7 +243,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Edges */}
           <section>
-            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400 mb-2 block">Edges</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2 block">Edges</label>
             <div className="flex gap-1 bg-zinc-50 dark:bg-zinc-800 p-1 rounded-xl">
               <OptionButton active={activeEdgeStyle === 'sharp'} onClick={() => updateProp('edgeStyle', 'sharp')}>
                  <SquareIcon size={16} />

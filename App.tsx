@@ -125,13 +125,21 @@ const App: React.FC = () => {
     };
   }, [elements, historyIndex, selectedElementId, scale, offset]);
 
+  // Auto-switch default colors based on theme
+  useEffect(() => {
+    if (isDarkMode) {
+      if (defaultStrokeColor === '#18181b') setDefaultStrokeColor('#e4e4e7');
+    } else {
+      if (defaultStrokeColor === '#e4e4e7') setDefaultStrokeColor('#18181b');
+    }
+  }, [isDarkMode]);
+
   return (
-    <div className={`h-screen w-screen overflow-hidden flex flex-col transition-colors duration-300 ${isDarkMode ? 'bg-zinc-950 text-white' : 'bg-white text-zinc-900'}`}>
+    <div className={`h-screen w-screen overflow-hidden flex flex-col transition-colors duration-300 ${isDarkMode ? 'dark bg-zinc-950 text-white' : 'bg-white text-zinc-900'}`}>
       <header className="fixed top-3 left-3 right-3 z-30 flex justify-between items-center pointer-events-none">
         {/* Left: Logo & Sidebar toggle */}
         <div className="flex items-center gap-2 pointer-events-auto">
-          <div className="bg-white dark:bg-zinc-900 p-2.5 rounded-xl shadow-lg border border-zinc-200 dark:border-zinc-800 flex items-center gap-3">
-             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">G</div>
+          <div className="bg-white dark:bg-zinc-900 p-2.5 rounded-xl  dark:border-zinc-800 flex items-center gap-3">
              <span className="font-bold text-base virgil-font hidden sm:block">GeminiSketch</span>
           </div>
         </div>
@@ -208,7 +216,7 @@ const App: React.FC = () => {
       </main>
 
       {/* Floating help hint in bottom right */}
-      <div className="fixed bottom-4 left-4 z-10 text-[10px] text-zinc-400 bg-white/50 dark:bg-zinc-900/50 px-2 py-1 rounded backdrop-blur-sm">
+      <div className="fixed bottom-4 left-4 z-10 text-[10px] text-zinc-600 dark:text-zinc-400 bg-white/50 dark:bg-zinc-900/50 px-2 py-1 rounded backdrop-blur-sm">
         Ctrl + Scroll to Zoom • Space + Drag to Pan
       </div>
 
