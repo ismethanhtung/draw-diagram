@@ -15,7 +15,7 @@ import Canvas from './components/Canvas';
 import Toolbar from './components/Toolbar';
 import Sidebar from './components/Sidebar';
 import HelpModal from './components/HelpModal';
-import { Tool, Element, Point } from './types';
+import { Tool, Element, Point, FillStyle, StrokeStyle, EdgeStyle } from './types';
 
 const App: React.FC = () => {
   const [elements, setElements] = useState<Element[]>([]);
@@ -34,8 +34,13 @@ const App: React.FC = () => {
   // Default properties
   const [defaultStrokeColor, setDefaultStrokeColor] = useState('#18181b');
   const [defaultBackgroundColor, setDefaultBackgroundColor] = useState('transparent');
+  const [defaultStrokeWidth, setDefaultStrokeWidth] = useState(2);
+  const [defaultRoughness, setDefaultRoughness] = useState(1);
+  const [defaultFillStyle, setDefaultFillStyle] = useState<FillStyle>('hachure');
+  const [defaultStrokeStyle, setDefaultStrokeStyle] = useState<StrokeStyle>('solid');
+  const [defaultEdgeStyle, setDefaultEdgeStyle] = useState<EdgeStyle>('round');
 
-  const updateElements = useCallback((newElements: Element[]) => {
+  const commitElements = useCallback((newElements: Element[]) => {
     setElements(newElements);
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push(newElements);
@@ -43,12 +48,16 @@ const App: React.FC = () => {
     setHistoryIndex(newHistory.length - 1);
   }, [history, historyIndex]);
 
+  const setElementsImmediate = useCallback((newElements: Element[]) => {
+    setElements(newElements);
+  }, []);
+
   const onUpdateElement = (updates: Partial<Element>) => {
     if (!selectedElementId) return;
     const newElements = elements.map(el => 
       el.id === selectedElementId ? { ...el, ...updates } : el
     );
-    updateElements(newElements);
+    commitElements(newElements);
   };
 
   const selectedElement = elements.find(el => el.id === selectedElementId) || null;
@@ -75,7 +84,7 @@ const App: React.FC = () => {
       }
       if (e.key === 'Delete' || e.key === 'Backspace') {
         if (selectedElementId) {
-          updateElements(elements.filter(el => el.id !== selectedElementId));
+          commitElements(elements.filter(el => el.id !== selectedElementId));
           setSelectedElementId(null);
         }
       }
@@ -189,11 +198,17 @@ const App: React.FC = () => {
       <main className="flex-1 relative">
         <Canvas 
           elements={elements} 
-          setElements={updateElements} 
+          setElementsImmediate={setElementsImmediate}
+          commitElements={commitElements}
           tool={selectedTool}
           isDarkMode={isDarkMode}
           strokeColor={defaultStrokeColor}
           backgroundColor={defaultBackgroundColor}
+          strokeWidth={defaultStrokeWidth}
+          roughness={defaultRoughness}
+          fillStyle={defaultFillStyle}
+          strokeStyle={defaultStrokeStyle}
+          edgeStyle={defaultEdgeStyle}
           onElementSelect={setSelectedElementId}
           selectedElementId={selectedElementId}
           scale={scale}
@@ -207,11 +222,21 @@ const App: React.FC = () => {
           selectedElement={selectedElement}
           onUpdateElement={onUpdateElement}
           isDarkMode={isDarkMode}
-          onAIGenerate={(newElements) => updateElements([...elements, ...newElements])}
+          onAIGenerate={(newElements) => commitElements([...elements, ...newElements])}
           defaultStrokeColor={defaultStrokeColor}
           setDefaultStrokeColor={setDefaultStrokeColor}
           defaultBackgroundColor={defaultBackgroundColor}
           setDefaultBackgroundColor={setDefaultBackgroundColor}
+          defaultStrokeWidth={defaultStrokeWidth}
+          setDefaultStrokeWidth={setDefaultStrokeWidth}
+          defaultRoughness={defaultRoughness}
+          setDefaultRoughness={setDefaultRoughness}
+          defaultFillStyle={defaultFillStyle}
+          setDefaultFillStyle={setDefaultFillStyle}
+          defaultStrokeStyle={defaultStrokeStyle}
+          setDefaultStrokeStyle={setDefaultStrokeStyle}
+          defaultEdgeStyle={defaultEdgeStyle}
+          setDefaultEdgeStyle={setDefaultEdgeStyle}
           onAddElement={(type, extra) => {
             if (type === 'aws-icon') {
               const centerX = -offset.x / scale + (window.innerWidth / scale) / 2;
@@ -235,7 +260,7 @@ const App: React.FC = () => {
                 iconKey: extra.iconKey,
                 iconName: extra.iconName
               };
-              updateElements([...elements, newElement]);
+              commitElements([...elements, newElement]);
               setSelectedElementId(newElement.id);
             }
           }}

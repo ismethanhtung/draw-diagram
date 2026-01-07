@@ -5,7 +5,7 @@ import {
   ChevronLeft, 
   ChevronRight,
   Square as SquareIcon,
-  MousePointer2
+  Search
 } from 'lucide-react';
 import { Element, Tool, FillStyle, StrokeStyle, EdgeStyle } from '../types';
 import { GoogleGenAI, Type } from '@google/genai';
@@ -22,6 +22,16 @@ interface SidebarProps {
   setDefaultStrokeColor: (c: string) => void;
   defaultBackgroundColor: string;
   setDefaultBackgroundColor: (c: string) => void;
+  defaultStrokeWidth: number;
+  setDefaultStrokeWidth: (v: number) => void;
+  defaultRoughness: number;
+  setDefaultRoughness: (v: number) => void;
+  defaultFillStyle: FillStyle;
+  setDefaultFillStyle: (v: FillStyle) => void;
+  defaultStrokeStyle: StrokeStyle;
+  setDefaultStrokeStyle: (v: StrokeStyle) => void;
+  defaultEdgeStyle: EdgeStyle;
+  setDefaultEdgeStyle: (v: EdgeStyle) => void;
   onAddElement?: (type: any, extra?: any) => void;
 }
 
@@ -33,21 +43,27 @@ const Sidebar: React.FC<SidebarProps> = ({
   onAIGenerate,
   defaultStrokeColor, setDefaultStrokeColor,
   defaultBackgroundColor, setDefaultBackgroundColor,
+  defaultStrokeWidth, setDefaultStrokeWidth,
+  defaultRoughness, setDefaultRoughness,
+  defaultFillStyle, setDefaultFillStyle,
+  defaultStrokeStyle, setDefaultStrokeStyle,
+  defaultEdgeStyle, setDefaultEdgeStyle,
   onAddElement
 }) => {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<'properties' | 'library'>('properties');
+  const [librarySearch, setLibrarySearch] = useState('');
 
   // Sync internal state with either selected element or defaults
   const activeStrokeColor = selectedElement?.strokeColor || defaultStrokeColor;
   const activeBackgroundColor = selectedElement?.backgroundColor || defaultBackgroundColor;
-  const activeStrokeWidth = selectedElement?.strokeWidth || 2;
-  const activeRoughness = selectedElement?.roughness || 1;
+  const activeStrokeWidth = selectedElement?.strokeWidth ?? defaultStrokeWidth;
+  const activeRoughness = selectedElement?.roughness ?? defaultRoughness;
   const activeOpacity = selectedElement?.opacity || 100;
-  const activeFillStyle = selectedElement?.fillStyle || 'hachure';
-  const activeStrokeStyle = selectedElement?.strokeStyle || 'solid';
-  const activeEdgeStyle = selectedElement?.edgeStyle || 'round';
+  const activeFillStyle = selectedElement?.fillStyle ?? defaultFillStyle;
+  const activeStrokeStyle = selectedElement?.strokeStyle ?? defaultStrokeStyle;
+  const activeEdgeStyle = selectedElement?.edgeStyle ?? defaultEdgeStyle;
 
   const updateProp = (key: keyof Element, value: any) => {
     if (selectedElement) {
@@ -55,6 +71,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     } else {
       if (key === 'strokeColor') setDefaultStrokeColor(value);
       if (key === 'backgroundColor') setDefaultBackgroundColor(value);
+      if (key === 'strokeWidth') setDefaultStrokeWidth(value);
+      if (key === 'roughness') setDefaultRoughness(value);
+      if (key === 'fillStyle') setDefaultFillStyle(value);
+      if (key === 'strokeStyle') setDefaultStrokeStyle(value);
+      if (key === 'edgeStyle') setDefaultEdgeStyle(value);
     }
   };
 
@@ -290,22 +311,53 @@ const Sidebar: React.FC<SidebarProps> = ({
           ) : (
             <div className="flex flex-col gap-6">
               <section>
-                 <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3 block">AWS Compute</label>
-                 <div className="grid grid-cols-4 gap-2">
-                    {Object.entries(awsIcons).map(([key, icon]) => (
-                      <button 
-                        key={key} 
-                        onClick={() => onAddElement && onAddElement('aws-icon', { iconKey: key, iconName: icon.name })}
-                        className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors gap-1 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
-                        title={icon.name}
-                      >
-                         <svg viewBox={icon.viewBox} className="w-8 h-8 pointer-events-none">
+                <div className="relative">
+                  <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-zinc-400" />
+                  <input
+                    value={librarySearch}
+                    onChange={(e) => setLibrarySearch(e.target.value)}
+                    placeholder="Search AWS services…"
+                    className="w-full pl-7 pr-2 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
+
+                {Object.entries(
+                  Object.entries(awsIcons)
+                    .filter(([_, icon]) => {
+                      const q = librarySearch.trim().toLowerCase();
+                      if (!q) return true;
+                      return icon.name.toLowerCase().includes(q);
+                    })
+                    .reduce((acc: Record<string, Array<[string, any]>>, [key, icon]) => {
+                      const category = icon.category || 'Other';
+                      acc[category] = acc[category] || [];
+                      acc[category].push([key, icon]);
+                      return acc;
+                    }, {})
+                ).map(([category, icons]) => (
+                  <div key={category} className="mt-4">
+                    <label className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3 block">
+                      AWS {category}
+                    </label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {icons.map(([key, icon]) => (
+                        <button
+                          key={key}
+                          onClick={() => onAddElement && onAddElement('aws-icon', { iconKey: key, iconName: icon.name })}
+                          className="flex flex-col items-center justify-center p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors gap-1 border border-transparent hover:border-zinc-200 dark:hover:border-zinc-700"
+                          title={icon.name}
+                        >
+                          <svg viewBox={icon.viewBox} className="w-8 h-8 pointer-events-none">
                             <path d={icon.path} fill={icon.fill} />
-                         </svg>
-                         <span className="text-[9px] text-zinc-500 overflow-hidden text-ellipsis w-full text-center whitespace-nowrap">{icon.name}</span>
-                      </button>
-                    ))}
-                 </div>
+                          </svg>
+                          <span className="text-[9px] text-zinc-500 overflow-hidden text-ellipsis w-full text-center whitespace-nowrap">
+                            {icon.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </section>
             </div>
           )}
